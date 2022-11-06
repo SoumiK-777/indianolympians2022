@@ -1,15 +1,26 @@
-from flask import Flask,request,jsonify
+from flask import Flask,request,render_template
 import utils
 
 app = Flask(__name__)
 
-@app.route('/classify-image',methods=['GET','POST'])
-def classify_image():
-    img_data=request.form['img_data']
-    response=jsonify(utils.classify_image(img_data))
-    response.headers.add('Access-Control-Allow-Origin','*')
+@app.route("/", methods=['GET', 'POST'])
+def index():
+	return render_template("index.html")
 
-    return response
+@app.route('/submit',methods=['GET','POST'])
+def classify():
+    p=''
+    img_path=''
+    if request.method == 'POST':
+        img = request.files['my_image']
+        img.filename="latest_img.jpg"
+        img_path = "static/" + img.filename	
+        img.save(img_path)
+        p = utils.classify_image(path=img_path)
+        if p=="":
+            return render_template("index.html")
+        else:
+            return render_template("index.html", prediction = p, img_path = img_path)
 
 if __name__ == "__main__":
     print("Starting Python Flask Server For Image Classification")
