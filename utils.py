@@ -10,7 +10,7 @@ __model=None
 def classify_image(path):
     imgs=get_cropped_image(path)
     result=""
-
+    final_img_array=""
     for img in imgs:
         sc_rw_img=cv2.resize(img,(32,32))
         img_har=w2d(sc_rw_img,'db1',5)
@@ -20,7 +20,10 @@ def classify_image(path):
         len_img_array=32*32*3+32*32
 
         final_img_array=combined_img.reshape(1,len_img_array).astype(float)
-    result=__class_number_to_name[int(__model.predict(final_img_array)[0])]
+    try:
+        result=__class_number_to_name[int(__model.predict(final_img_array)[0])]
+    except:
+        pass
     return result
 
 def get_cropped_image(img_path):

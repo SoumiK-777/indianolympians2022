@@ -1,7 +1,8 @@
-from flask import Flask,request,render_template
+from flask import Flask,request,render_template,flash
 import utils
 
 app = Flask(__name__)
+app.secret_key = "super secret key"
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -18,7 +19,7 @@ def classify():
         img.save(img_path)
         p = utils.classify_image(path=img_path)
         if p=="":
-            return render_template("index.html")
+            return render_template("index.html",prediction="SORRY NO FACE DETECTED,PLEASE UPLOAD A DIFFERENT IMAGE",img_path="./static/error.png")
         else:
             return render_template("index.html", prediction = p, img_path = img_path)
 
