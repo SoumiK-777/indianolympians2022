@@ -24,6 +24,5 @@ def classify():
             return render_template("index.html", prediction = p, img_path = img_path)
 
 if __name__ == "__main__":
-    print("Starting Python Flask Server For Image Classification")
     utils.load_artifacts()
-    app.run(port=5000, debug=True)
+    app.run(debug=True)
