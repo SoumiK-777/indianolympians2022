@@ -4,7 +4,7 @@ import utils
 app = Flask(__name__)
 app.secret_key = "super secret key"
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
 def index():
 	return render_template("index.html")
 
