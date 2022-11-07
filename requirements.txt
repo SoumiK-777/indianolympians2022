@@ -5,4 +5,5 @@ numpy
 pandas
 matplotlib
 PyWavelets
+base64
 gunicorn
