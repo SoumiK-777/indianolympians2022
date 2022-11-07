@@ -2,6 +2,7 @@ from flask import Flask,request,render_template
 import cv2
 import numpy as np
 import pywt
+import base64
 import pickle
 
 app = Flask(__name__)
@@ -12,25 +13,26 @@ def index():
 
 @app.route('/submit',methods=['GET','POST'])
 def classify():
-    p=''
-    img_path=''
-    if request.method == 'POST':
-        img = request.files['my_image']
-        img.filename="latest_img.jpg"
-        img_path = "static/" + img.filename	
-        img.save(img_path)
-        p = classify_image(path=img_path)
+    file = request.files['my_image']
+    try:
+        img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+        p = classify_image(img)
         if p=="":
-            return render_template("index.html",prediction="SORRY NO FACE DETECTED,PLEASE UPLOAD A DIFFERENT IMAGE",img_path="./static/error.png")
+            return render_template("index.html",prediction="SORRY NO FACE DETECTED,PLEASE UPLOAD A DIFFERENT IMAGE",image_to_show="./static/error.png")
         else:
-            return render_template("index.html", prediction = p, img_path = img_path)
+            image_content = cv2.imencode('.jpg', img)[1].tostring()
+            encoded_image = base64.encodestring(image_content)
+            to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
+            return render_template('index.html',image_to_show=to_send,prediction=p)
+    except:
+        return render_template("index.html",prediction="SORRY NO FACE DETECTED,PLEASE UPLOAD A DIFFERENT IMAGE",image_to_show="./static/error.png")
 
 __class_name_to_number = {}
 __class_number_to_name = {}
 __model=None
 
-def classify_image(path):
-    imgs=get_cropped_image(path)
+def classify_image(img):
+    imgs=get_cropped_image(img)
     result=""
     final_img_array=""
     for img in imgs:
@@ -48,11 +50,11 @@ def classify_image(path):
         pass
     return result
 
-def get_cropped_image(img_path):
+def get_cropped_image(img):
     face_cascade=cv2.CascadeClassifier("./haar-cascade-files-master/haarcascade_frontalface_default.xml")
     eye_cascade=cv2.CascadeClassifier("./haar-cascade-files-master/haarcascade_eye.xml")
 
-    img=cv2.imread(img_path)
+    # img=cv2.imread(img_path)
 
     img_gray=cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
     faces=face_cascade.detectMultiScale(img_gray,scaleFactor=1.05,minNeighbors=5)

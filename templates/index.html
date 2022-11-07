@@ -13,14 +13,16 @@
 <body>
 
     <div class="container">
-        <h1 class="jumbotron bg-primary">TOKYO OLYMPICS 2020 INDIAN WINNERS</h1>
+        <div class="text-center">
+            <h1 class="jumbotron bg-primary">TOKYO OLYMPICS 2020 INDIAN WINNERS</h1>
+        </div>
         <br><br>
         <form class="form-horizontal" action="/submit" method="post" enctype="multipart/form-data">
 
             <div class="form-group">
                 <label class="control-label col-sm-2" for="pwd">Upload Your Image :</label>
                 <div class="col-sm-10">
-                    <input type="file" class="form-control" placeholder="Hours Studied" name="my_image" id="pwd">
+                    <input type="file" class="form-control" placeholder="Your Image" name="my_image" id="pwd">
                 </div>
             </div>
 
@@ -31,10 +33,20 @@
             </div>
         </form>
 
-        {% if prediction %}
-        <img src="{{img_path}}" height="400px" width="400px">
+        <!-- {% if prediction %}
+        <img src="{{img_to_show}}" height="400px" width="400px">
         <h2> Predicted Player : <i> {{prediction}} </i></h2>
 
         {% endif %}
 
+    </div> -->
+
+    <div class="text-center">
+        {% if image_to_show %}
+        <div>
+            <img src="{{ image_to_show }}" height="400px" width="400px">
+        </div>
+        <h2> Predicted Player : <i> {{prediction}} </i></h2>
+        {% endif %}
     </div>
+</body>
