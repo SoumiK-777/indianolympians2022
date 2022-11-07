@@ -14,18 +14,15 @@ def index():
 @app.route('/submit',methods=['GET','POST'])
 def classify():
     file = request.files['my_image']
-    try:
-        img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-        p = classify_image(img)
-        if p=="":
-            return render_template("index.html",prediction="SORRY NO FACE DETECTED,PLEASE UPLOAD A DIFFERENT IMAGE",image_to_show="./static/error.png")
-        else:
-            image_content = cv2.imencode('.jpg', img)[1].tostring()
-            encoded_image = base64.encodestring(image_content)
-            to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
-            return render_template('index.html',image_to_show=to_send,prediction=p)
-    except:
+    img = cv2.imdecode(np.frombuffer(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+    p = classify_image(img)
+    if p=="":
         return render_template("index.html",prediction="SORRY NO FACE DETECTED,PLEASE UPLOAD A DIFFERENT IMAGE",image_to_show="./static/error.png")
+    else:
+        image_content = cv2.imencode('.jpg', img)[1].tostring()
+        encoded_image = base64.encodestring(image_content)
+        to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
+        return render_template('index.html',image_to_show=to_send,prediction=p)
 
 __class_name_to_number = {}
 __class_number_to_name = {}
