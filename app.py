@@ -1,5 +1,5 @@
 from flask import Flask,request,render_template
-from .utils import classify_image,load_artifacts
+from .utils.utils import classify_image,load_artifacts
 
 app = Flask(__name__)
 
