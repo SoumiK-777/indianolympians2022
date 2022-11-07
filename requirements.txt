@@ -1,6 +1,6 @@
 Flask
 sklearn
-opencv-python-headless==4.2.0.32
+opencv-python-headless
 numpy
 pandas
 matplotlib
