@@ -1,8 +1,7 @@
-from flask import Flask,request,render_template,flash
-import utils
+from flask import Flask,request,render_template
+from .utils import classify_image,load_artifacts
 
 app = Flask(__name__)
-app.secret_key = "super secret key"
 
 @app.route("/")
 def index():
@@ -17,12 +16,12 @@ def classify():
         img.filename="latest_img.jpg"
         img_path = "static/" + img.filename	
         img.save(img_path)
-        p = utils.classify_image(path=img_path)
+        p = classify_image(path=img_path)
         if p=="":
             return render_template("index.html",prediction="SORRY NO FACE DETECTED,PLEASE UPLOAD A DIFFERENT IMAGE",img_path="./static/error.png")
         else:
             return render_template("index.html", prediction = p, img_path = img_path)
 
 if __name__ == "__main__":
-    utils.load_artifacts()
+    load_artifacts()
     app.run(debug=True)
